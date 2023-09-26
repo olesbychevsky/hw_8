@@ -1,9 +1,27 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 
 def get_birthdays_per_week(users):
-    # Реалізуйте тут домашнє завдання
-    return users
+    respond = {}
+    for user in users:
+        transformed_date = datetime(
+            date.today().year, user["birthday"].month, user["birthday"].day).date()
+        if transformed_date < date.today():
+            transformed_date = datetime(
+                date.today().year + 1, user["birthday"].month, user["birthday"].day).date()
+        if transformed_date >= date.today():
+            if transformed_date - date.today() <= timedelta(days=6):
+                if transformed_date.weekday() >= 5:
+                    if "Monday" in respond:
+                        respond["Monday"].append(user["name"])
+                    else:
+                        respond["Monday"] = [user["name"]]
+                else:
+                    if f"{transformed_date:%A}" in respond:
+                        respond[f"{transformed_date:%A}"].append(user["name"])
+                    else:
+                        respond[f"{transformed_date:%A}"] = [user["name"]]
+    return respond
 
 
 if __name__ == "__main__":
